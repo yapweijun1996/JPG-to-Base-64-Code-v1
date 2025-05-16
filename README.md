@@ -21,3 +21,4 @@ A simple web tool to convert JPG or PNG images to Base64 code, right in your bro
 All processing is done in your browser. Your images are never uploaded anywhere.
 
 ## Demo
+https://yapweijun1996.github.io/JPG-to-Base-64-Code-v1/
