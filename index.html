@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JPG/PNG to Base64 Converter</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 600px; margin: auto; }
+    .drop-area {
+      border: 2px dashed #aaa;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      color: #888;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .drop-area.dragover { border-color: #007bff; color: #007bff; }
+    textarea, pre { width: 100%; min-height: 80px; margin-top: 10px; }
+    .img-preview { margin: 20px 0; }
+    .img-preview img { width: 100px; height: auto; border: 1px solid #ccc; }
+    .snippet { background: #f4f4f4; padding: 10px; border-radius: 4px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>JPG/PNG to Base64 Converter</h2>
+    <p>Upload, drag & drop, or paste a JPG/PNG image below:</p>
+    <input type="file" id="fileInput" accept="image/png, image/jpeg"><br><br>
+    <div id="dropArea" class="drop-area">Drag & drop image here</div>
+    <div id="pasteArea" class="drop-area" tabindex="0">Or click here and paste image (Ctrl+V)</div>
+    <div class="img-preview" id="imgPreview"></div>
+    <label for="base64Output">Base64 Code:</label>
+    <textarea id="base64Output" readonly></textarea>
+    <label for="imgSnippet">HTML &lt;img&gt; Snippet:</label>
+    <pre id="imgSnippet" class="snippet"></pre>
+    <div id="errorMsg" style="color:red;"></div>
+  </div>
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropArea = document.getElementById('dropArea');
+    const pasteArea = document.getElementById('pasteArea');
+    const base64Output = document.getElementById('base64Output');
+    const imgPreview = document.getElementById('imgPreview');
+    const imgSnippet = document.getElementById('imgSnippet');
+    const errorMsg = document.getElementById('errorMsg');
+
+    function handleFile(file) {
+      errorMsg.textContent = '';
+      if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+        errorMsg.textContent = 'Only JPG and PNG images are supported.';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        base64Output.value = base64;
+        imgPreview.innerHTML = `<img src="${base64}" alt="Preview">`;
+        imgSnippet.textContent = `<img src=\"${base64}\" style=\"width:100px;height:auto;\">`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.classList.add('dragover');
+    });
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.classList.remove('dragover');
+    });
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    pasteArea.addEventListener('click', () => pasteArea.focus());
+    pasteArea.addEventListener('paste', (e) => {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          handleFile(file);
+          break;
+        }
+      }
+    });
+  </script>
+</body>
+</html> 
