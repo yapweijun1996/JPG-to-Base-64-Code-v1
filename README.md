@@ -22,3 +22,7 @@ All processing is done in your browser. Your images are never uploaded anywhere.
 
 ## Demo
 https://yapweijun1996.github.io/JPG-to-Base-64-Code-v1/
+
+
+## Preview
+![image](https://github.com/user-attachments/assets/7cd04dc2-8c6b-43bc-a955-4f9dfde26e09)
