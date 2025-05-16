@@ -53,11 +53,23 @@
         return;
       }
       const reader = new FileReader();
+      // Helper to wrap Base64 into lines of given width
+      function wrapBase64(str, width) {
+        const regex = new RegExp('.{1,' + width + '}', 'g');
+        const parts = str.match(regex) || [];
+        return parts.join('\n');
+      }
       reader.onload = function(e) {
         const base64 = e.target.result;
         base64Output.value = base64;
         imgPreview.innerHTML = `<img src="${base64}" alt="Preview">`;
-        imgSnippet.textContent = `<img src=\"${base64}\" style=\"width:100px;height:auto;\">`;
+        // Wrap the Base64 payload for snippet readability
+        const commaIndex = base64.indexOf(',');
+        const prefix = base64.slice(0, commaIndex + 1);
+        const payload = base64.slice(commaIndex + 1);
+        const wrappedPayload = wrapBase64(payload, 80);
+        const wrappedBase64 = prefix + wrappedPayload;
+        imgSnippet.textContent = `<img src=\"${wrappedBase64}\" style=\"width:100px;height:auto;\">`;
       };
       reader.readAsDataURL(file);
     }
